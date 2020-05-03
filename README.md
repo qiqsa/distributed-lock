@@ -231,6 +231,3 @@ public class SaleTicketTest {
 
 执行结果如下
 ![](https://imgkr.cn-bj.ufileos.com/fa26d233-3b84-49da-98ba-2b9ac90e5b21.jpg)
-
-
-完整代码已上传<https://github.com/qiqsa/distributed-lock>
