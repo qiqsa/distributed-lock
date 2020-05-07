@@ -38,7 +38,7 @@ public class SaleTicket implements Runnable {
             System.out.println(Thread.currentThread().getName() + " - 在售第" + (100 - tickets) + "票 :: 剩余" + (tickets));
         }
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
 
         }

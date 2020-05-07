@@ -7,6 +7,8 @@ import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * @author Qi.qingshan
  * @date 2020/5/2
@@ -49,7 +51,8 @@ public class ZkUtils {
             zkClient.create().withMode(CreateMode.EPHEMERAL).forPath(mkPath(path, node), value.getBytes());
             success = true;
         } catch (Exception e) {
-            log.error(e.getMessage());
+            String errorMsg = Optional.ofNullable(e.getMessage()).orElse(e.toString());
+            log.error("Failed to lock [" + node + "] ::" + errorMsg);
             success = false;
         }
         return success;
