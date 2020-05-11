@@ -13,14 +13,14 @@ import java.util.concurrent.locks.Lock;
  */
 public class SaleTicket implements Runnable {
 
-    private Lock lock = new ZkLock();
+    private Lock lock = new RedisLock();
 
     private int tickets = 100;
 
     public void run() {
         for (; ; ) {
             if (tickets <= 0) break;
-            lock.lock();
+            lock.tryLock();
             try {
                 sale();
             } finally {

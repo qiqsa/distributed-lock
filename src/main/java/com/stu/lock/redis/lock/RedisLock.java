@@ -1,5 +1,6 @@
 package com.stu.lock.redis.lock;
 
+import com.stu.lock.hook.SPILockHook;
 import com.stu.lock.redis.common.JedisUtis;
 
 import java.util.UUID;
@@ -12,6 +13,8 @@ import java.util.concurrent.locks.Lock;
  * @date 2020/5/1
  */
 public class RedisLock implements Lock {
+
+    private final SPILockHook hook = new SPILockHook();
 
     private static final String LOCK_KEY = "redisKey";
 
@@ -46,17 +49,25 @@ public class RedisLock implements Lock {
      * @return
      */
     public boolean tryLock() {
+        hook.start();
         String uuid = UUID.randomUUID().toString();
-        String ret = JedisUtis.set(LOCK_KEY, uuid, DEFAULT_TIME_OUT);
+        String ret = null;
+        try {
+            ret = JedisUtis.set(LOCK_KEY, uuid, DEFAULT_TIME_OUT);
+        } catch (Exception e) {
+            hook.finishFailure(e);
+            throw e;
+        }
         if ("OK".equals(ret)) {
             //lock success
             LOCAL.set(uuid);
+            hook.finishSuccess();
             return true;
         }
         return false;
     }
 
-    public boolean tryLock(long time, TimeUnit unit){
+    public boolean tryLock(long time, TimeUnit unit) {
         String uuid = UUID.randomUUID().toString();
         String ret = JedisUtis.set(LOCK_KEY, uuid, unit.toMillis(time));
         if ("ok".equals(ret)) {
